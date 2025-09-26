@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Career Path Finder</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #f9a8d4, #c084fc, #60a5fa);
+      background-size: 200% 200%;
+      animation: gradientMove 12s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e1e2f;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #6366f1, #ec4899);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .results {
+      margin-top: 20px;
+    }
+
+    .career {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.6s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .career h3 {
+      margin: 0 0 8px;
+      color: #111827;
+    }
+
+    .career p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Career Path Finder 🌟</h1>
+    <p>Enter your skills below and discover possible career options!</p>
+    <textarea id="skillsInput" placeholder="Example: HTML, CSS, Python, Figma"></textarea>
+    <button onclick="analyzeSkills()">Find Careers</button>
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <script>
+    const CAREERS = [
+      {
+        title: "Mobile App Developer",
+        keywords: ["java", "kotlin", "swift", "flutter", "android", "ios"],
+        courses: ["Android Development", "iOS Development", "Flutter Basics"],
+        jobs: ["Android Developer", "iOS Developer", "Flutter Engineer"]
+      },
+      {
+        title: "Cloud Engineer",
+        keywords: ["aws", "azure", "cloud", "docker", "kubernetes"],
+        courses: ["AWS Fundamentals", "Azure Cloud Basics", "Docker & Kubernetes"],
+        jobs: ["Cloud Engineer", "DevOps Engineer", "Site Reliability Engineer"]
+      },
+      {
+        title: "Game Developer",
+        keywords: ["unity", "c#", "unreal", "3d", "game"],
+        courses: ["Unity Game Development", "Unreal Engine Basics"],
+        jobs: ["Unity Developer", "Game Designer", "Gameplay Programmer"]
+      },
+      {
+        title: "Digital Marketer",
+        keywords: ["seo", "marketing", "ads", "social media", "content"],
+        courses: ["SEO Basics", "Social Media Marketing", "Google Ads"],
+        jobs: ["Digital Marketing Specialist", "Content Strategist", "SEO Analyst"]
+      },
+      {
+        title: "AI Researcher",
+        keywords: ["python", "ml", "deep learning", "ai", "research"],
+        courses: ["Machine Learning", "Deep Learning Specialization"],
+        jobs: ["AI Research Assistant", "ML Engineer", "Research Scientist"]
+      }
+    ];
+
+    function analyzeSkills() {
+      const input = document.getElementById("skillsInput").value.toLowerCase();
+      const tokens = input.split(/[,\\s]+/).filter(Boolean);
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (tokens.length === 0) {
+        resultsDiv.innerHTML = "<p style='text-align:center;'>Please enter some skills 💕</p>";
+        return;
+      }
+
+      const matches = CAREERS.map(career => {
+        let score = 0;
+        career.keywords.forEach(k => {
+          if (tokens.includes(k)) score++;
+        });
+        return { ...career, score };
+      }).filter(c => c.score > 0).sort((a,b)=> b.score - a.score);
+
+      if (matches.length === 0) {
+        resultsDiv.innerHTML = "<p style='text-align:center;'>No matches found 💡 Try adding more skills.</p>";
+        return;
+      }
+
+      matches.forEach((career, i) => {
+        const div = document.createElement("div");
+        div.className = "career";
+        div.style.animationDelay = `${i * 0.2}s`; // staggered animation
+        div.innerHTML = `
+          <h3>${career.title}</h3>
+          <p><b>Recommended Courses:</b> ${career.courses.join(", ")}</p>
+          <p><b>Potential Jobs:</b> ${career.jobs.join(", ")}</p>
+        `;
+        resultsDiv.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
